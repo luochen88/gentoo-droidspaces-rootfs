@@ -43,7 +43,7 @@ RUN emerge \
     sys-process/lsof \
     sys-process/psmisc \
     sys-process/procps \
-    sys-apps/fastfetch \
+    app-misc/fastfetch \
     sys-apps/kmod \
     # Logging & Rotation
     app-admin/logrotate \
@@ -64,7 +64,7 @@ RUN emerge \
     app-containers/docker-cli \
     app-containers/docker-compose \
     # Misc
-    app-misc/dialog \
+    dev-util/dialog \
     # Clean up distfiles to reduce size
     && rm -rf /var/cache/distfiles/*
 

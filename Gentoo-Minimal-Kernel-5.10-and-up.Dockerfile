@@ -42,7 +42,7 @@ RUN emerge \
     # Process monitoring
     sys-process/procps \
     # Misc
-    app-misc/dialog \
+    dev-util/dialog \
     # Clean up distfiles to reduce size
     && rm -rf /var/cache/distfiles/*
 
