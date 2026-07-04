@@ -276,7 +276,7 @@ RestartSec=3
 [Install]
 WantedBy=multi-user.target
 EOF
-    mkdir -p /etc/systemd/system/multi-user.target.wants && \
+RUN mkdir -p /etc/systemd/system/multi-user.target.wants && \
     ln -sf /etc/systemd/system/plasma-x11.service /etc/systemd/system/multi-user.target.wants/plasma-x11.service
 
 # Set ownership of home directory
