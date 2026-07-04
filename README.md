@@ -72,4 +72,4 @@ Pushes to `main` and `kde` branches trigger automatic builds via `ubuntu-24.04-a
 ## Credits
 
 Based on [Droidspaces-rootfs-builder](https://github.com/Droidspaces/Droidspaces-rootfs-builder).
-KDE integration inspired by [Droidspaces-rootfs-KDE-builder](https://github.com/Goldzxcbug/Droidspaces-rootfs-KDE-builder).
+KDE solution and `on_aaudio` launch scripts adapted from [Droidspaces-rootfs-KDE-builder](https://github.com/Goldzxcbug/Droidspaces-rootfs-KDE-builder) — 感谢！

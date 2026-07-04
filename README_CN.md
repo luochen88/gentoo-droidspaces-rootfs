@@ -72,4 +72,4 @@ net-im/telegram-desktop
 ## 致谢
 
 基于 [Droidspaces-rootfs-builder](https://github.com/Droidspaces/Droidspaces-rootfs-builder)。
-KDE 方案参考 [Droidspaces-rootfs-KDE-builder](https://github.com/Goldzxcbug/Droidspaces-rootfs-KDE-builder)。
+KDE 方案及 `on_aaudio` 启动脚本参考 [Droidspaces-rootfs-KDE-builder](https://github.com/Goldzxcbug/Droidspaces-rootfs-KDE-builder) — 感谢！
