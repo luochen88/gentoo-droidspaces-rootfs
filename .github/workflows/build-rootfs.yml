@@ -109,3 +109,42 @@ jobs:
           else
             echo "No changes in rootfs.json to push."
           fi
+
+  notify:
+    name: Notify (TG + WeChat)
+    needs: [setup, build, release]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare message
+        id: msg
+        run: |
+          if [ "${{ needs.build.result }}" = "success" ] && [ "${{ needs.release.result }}" = "success" ]; then
+            STATUS="SUCCESS"
+            EMOJI="✅"
+          else
+            STATUS="FAILED"
+            EMOJI="❌"
+          fi
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          MSG="${EMOJI} Gentoo RootFS Build ${STATUS} | Branch: ${{ github.ref_name }} | ID: ${{ needs.setup.outputs.build_id }} | ${RUN_URL}"
+          echo "text=${MSG}" >> $GITHUB_OUTPUT
+
+      - name: Notify Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        if: env.TELEGRAM_BOT_TOKEN != ''
+        run: |
+          curl -sX POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d "chat_id=${TELEGRAM_CHAT_ID}" \
+            -d "text=${{ steps.msg.outputs.text }}"
+
+      - name: Notify WeChat via Hermes
+        env:
+          HERMES_WEBHOOK_URL: ${{ secrets.HERMES_WEBHOOK_URL }}
+        if: env.HERMES_WEBHOOK_URL != ''
+        run: |
+          curl -sX POST "${HERMES_WEBHOOK_URL}" \
+            -H 'Content-Type: application/json' \
+            -d '{"event":"ci_build","status":"${{ needs.build.result }}","branch":"${{ github.ref_name }}","build_id":"${{ needs.setup.outputs.build_id }}","url":"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}'
