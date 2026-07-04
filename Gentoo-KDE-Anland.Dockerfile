@@ -356,7 +356,7 @@ PAMName=login
 [Install]
 WantedBy=multi-user.target
 EOF
-    mkdir -p /etc/systemd/system/multi-user.target.wants && \
+RUN mkdir -p /etc/systemd/system/multi-user.target.wants && \
     ln -sf /etc/systemd/system/plasma-wayland.service /etc/systemd/system/multi-user.target.wants/plasma-wayland.service
 
 # Set ownership of home directory
