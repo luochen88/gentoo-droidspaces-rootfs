@@ -30,10 +30,10 @@ net-im/telegram-desktop
 
 ```bash
 # aarch64 原生构建
-./build_rootfs-native.sh -i Gentoo-Minimal-Kernel-5.10-and-up.Dockerfile -v dev
+./build_rootfs-native.sh -i Gentoo-Minimal.Dockerfile -v dev
 
 # Base 版本
-./build_rootfs-native.sh -i Gentoo-base-Kernel-5.10-and-up.Dockerfile -v dev
+./build_rootfs-native.sh -i Gentoo-base.Dockerfile -v dev
 ```
 
 ## CI/CD

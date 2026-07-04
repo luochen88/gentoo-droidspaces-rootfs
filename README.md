@@ -20,10 +20,10 @@ Build Gentoo Linux rootfs tarballs for [Droidspaces](https://github.com/Droidspa
 
 ```bash
 # Native build (on aarch64 host)
-./build_rootfs-native.sh -i Gentoo-Minimal-Kernel-5.10-and-up.Dockerfile -v dev
+./build_rootfs-native.sh -i Gentoo-Minimal.Dockerfile -v dev
 
 # Or the Base variant
-./build_rootfs-native.sh -i Gentoo-base-Kernel-5.10-and-up.Dockerfile -v dev
+./build_rootfs-native.sh -i Gentoo-base.Dockerfile -v dev
 ```
 
 ## GitHub Actions

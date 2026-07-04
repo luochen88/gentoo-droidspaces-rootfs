@@ -26,7 +26,7 @@ if [ ! -f "$DOCKERFILE" ]; then
     exit 1
 fi
 
-# Extract prefix (e.g., Gentoo-base-Kernel-5.10-and-up from Gentoo-base-Kernel-5.10-and-up.Dockerfile)
+# Extract prefix (e.g., Gentoo-base from Gentoo-base.Dockerfile)
 PREFIX=$(echo "$DOCKERFILE" | sed 's/\.Dockerfile//')
 
 echo "========================================================="
