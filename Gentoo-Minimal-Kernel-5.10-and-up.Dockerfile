@@ -3,12 +3,14 @@
 ARG TARGETPLATFORM
 FROM gentoo/stage3:systemd AS customizer
 
-# Update Portage and sync
+# Update Portage, enable binary packages for speed
 RUN emerge --sync && \
-    emerge --oneshot sys-apps/portage
+    emerge --oneshot sys-apps/portage && \
+    echo 'FEATURES="${FEATURES} -ipc-sandbox -network-sandbox -pid-sandbox getbinpkg"' >> /etc/portage/make.conf && \
+    echo 'EMERGE_DEFAULT_OPTS="--jobs=$(nproc) --load-average=$(nproc) --getbinpkg --usepkg"' >> /etc/portage/make.conf
 
 # Install essential packages
-RUN emerge --jobs=$(nproc) --load-average=$(nproc) \
+RUN emerge \
     # Core utilities
     app-shells/bash \
     app-shells/bash-completion \
@@ -30,7 +32,7 @@ RUN emerge --jobs=$(nproc) --load-average=$(nproc) \
     app-admin/sudo \
     # Networking & SSH
     net-misc/openssh \
-    net-analyzer/net-tools \
+    sys-apps/net-tools \
     net-firewall/iptables \
     net-misc/iputils \
     sys-apps/iproute2 \
