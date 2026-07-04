@@ -1,0 +1,28 @@
+[
+  {
+    "name": "Gentoo Linux - Minimal",
+    "distro": "Gentoo",
+    "description": "Minimal Gentoo Linux rootfs with systemd and basic packages. (Runs on Kernel 5.10 and above only).",
+    "architecture": "aarch64",
+    "file": "Gentoo-Minimal-Kernel-5.10-and-up.Dockerfile",
+    "download_url": "",
+    "sha256": "",
+    "size_bytes": 0,
+    "version": "",
+    "build_date": "",
+    "author": "luochen88"
+  },
+  {
+    "name": "Gentoo Linux - Base",
+    "distro": "Gentoo",
+    "description": "Gentoo Linux rootfs with systemd, basic packages, development tools, Python, and Docker. (Runs on Kernel 5.10 and above only).",
+    "architecture": "aarch64",
+    "file": "Gentoo-base-Kernel-5.10-and-up.Dockerfile",
+    "download_url": "",
+    "sha256": "",
+    "size_bytes": 0,
+    "version": "",
+    "build_date": "",
+    "author": "luochen88"
+  }
+]
