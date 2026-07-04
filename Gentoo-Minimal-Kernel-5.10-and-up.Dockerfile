@@ -3,15 +3,19 @@
 ARG TARGETPLATFORM
 FROM gentoo/stage3:systemd AS customizer
 
-# Update Portage, enable binary packages for speed
+# Update Portage, configure for source build
 RUN emerge --sync && \
     emerge --oneshot sys-apps/portage && \
-    echo 'FEATURES="${FEATURES} -ipc-sandbox -network-sandbox -pid-sandbox getbinpkg"' >> /etc/portage/make.conf && \
-    echo 'EMERGE_DEFAULT_OPTS="--jobs=$(nproc) --load-average=$(nproc) --getbinpkg --usepkg"' >> /etc/portage/make.conf && \
-    echo 'PORTAGE_BINHOST="https://gentoo.osuosl.org/experimental/arm64/binpkg/"' >> /etc/portage/make.conf
+    echo 'FEATURES="${FEATURES} -ipc-sandbox -network-sandbox -pid-sandbox noman noinfo nodoc"' >> /etc/portage/make.conf && \
+    echo 'EMERGE_DEFAULT_OPTS="--jobs=$(nproc) --load-average=$(nproc) --quiet-build=y"' >> /etc/portage/make.conf
 
-# Install essential packages
-RUN emerge \
+# Copy optional extra packages list
+COPY packages.conf /tmp/packages.conf
+
+# Install essential + optional packages (with distfiles cache)
+RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
+    EXTRA=$(grep -v '^#' /tmp/packages.conf | grep -o '^[^ ]*' | tr '\n' ' ' 2>/dev/null || true) && \
+    emerge \
     # Core utilities
     app-shells/bash \
     app-shells/bash-completion \
@@ -44,6 +48,7 @@ RUN emerge \
     sys-process/procps \
     # Misc
     dev-util/dialog \
+    $EXTRA \
     # Clean up distfiles to reduce size
     && rm -rf /var/cache/distfiles/*
 
