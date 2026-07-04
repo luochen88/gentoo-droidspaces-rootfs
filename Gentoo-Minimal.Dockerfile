@@ -16,21 +16,10 @@ COPY packages.conf /tmp/packages.conf
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
     EXTRA=$(grep -v '^#' /tmp/packages.conf | grep -o '^[^ ]*' | tr '\n' ' ' 2>/dev/null || true) && \
     emerge \
-    # Core utilities
+    # Shell & essentials
     app-shells/bash \
-    app-shells/bash-completion \
-    sys-apps/coreutils \
-    sys-apps/file \
-    sys-apps/findutils \
-    sys-apps/grep \
-    sys-apps/sed \
-    sys-apps/gawk \
     net-misc/curl \
-    net-misc/wget \
     app-misc/ca-certificates \
-    # systemd (includes udev, networkd, resolved)
-    sys-apps/systemd \
-    sys-apps/dbus \
     # Basic tools
     dev-vcs/git \
     app-editors/nano \
@@ -41,13 +30,6 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
     net-firewall/iptables \
     net-misc/iputils \
     sys-apps/iproute2 \
-    net-dns/bind-tools \
-    # Logging & Rotation
-    app-admin/logrotate \
-    # Process monitoring
-    sys-process/procps \
-    # Misc
-    dev-util/dialog \
     $EXTRA \
     # Clean up distfiles to reduce size
     && rm -rf /var/cache/distfiles/*
