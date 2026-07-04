@@ -10,38 +10,33 @@ Build Gentoo Linux rootfs tarballs for [Droidspaces](https://github.com/Droidspa
 |---------|-------------|--------|
 | **Minimal** | Basic systemd system with core utilities, SSH, networking | `main` |
 | **Base** | Minimal + development tools (GCC, Clang, CMake, Python), Docker | `main` |
-| **KDE** | Full KDE Plasma desktop environment, X11, Chinese support | `kde` |
+| **KDE** | KDE Plasma desktop with konsole + dolphin, X11, Chinese support | `kde` |
 
 ## KDE Variant (`kde` branch)
 
-The KDE variant builds a complete Gentoo KDE Plasma desktop environment for Droidspaces. Currently supports **X11 mode** — starts Plasma via `startplasma-x11` on `DISPLAY=:5`.
+Builds a Gentoo KDE Plasma desktop environment for Droidspaces. Starts Plasma via `startplasma-x11` on `DISPLAY=:5`.
 
 ### Build Options
 
 | ARG | Default | Description |
 |-----|---------|-------------|
-| `BUILD_KDE` | `min` | `min`=Plasma desktop+konsole+dolphin, `full`=Plasma-meta+full KDE suite |
 | `ENABLE_zh` | `true` | Chinese locale + Noto CJK fonts + Fcitx5 IME |
 | `ENABLE_dev` | `true` | Development tools (GCC, Clang, CMake, Python, pip) |
 | `PulseAudio` | `socket` | Audio forwarding: `socket` / `tcp` / empty=disable |
-| `USERNAME` | `luochen570` | Default normal user name |
+| `USERNAME` | `luochen570` | Default user (password: `12345678`) |
 
-### Packages Included
+### Packages
 
-**Base system** (always): bash, curl, ca-certificates, git, nano, sudo, openssh, net-tools, iptables, iputils, iproute2, htop, procps, Xorg server, PipeWire
+**Base system**: bash, curl, ca-certificates, git, nano, sudo, openssh, net-tools, iptables, iputils, iproute2, htop, procps, Xorg server, PipeWire
 
-**KDE min**: plasma-desktop, konsole, dolphin, kate, ark, kinfocenter, powerdevil, kscreen, plasma-pa
+**KDE Plasma**: plasma-desktop, konsole, dolphin, kate, ark, kinfocenter, powerdevil, kscreen, plasma-pa
 
-**KDE full**: plasma-meta, kde-apps-meta + gwenview, okular, spectacle, kcalc, kfind, filelight
+**Optional**: fcitx5 + Chinese addons (ENABLE_zh=true), GCC/Clang/CMake/Python (ENABLE_dev=true)
 
 ### Building
 
 ```bash
-# KDE min (default)
 ./build_rootfs-native.sh -i Gentoo-KDE.Dockerfile -v dev
-
-# KDE full — set BUILD_KDE=full via Docker build-arg
-docker build --build-arg BUILD_KDE=full -f Gentoo-KDE.Dockerfile -o . .
 ```
 
 ## Requirements

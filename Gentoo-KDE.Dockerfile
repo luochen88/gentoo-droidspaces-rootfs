@@ -4,7 +4,6 @@ ARG TARGETPLATFORM
 FROM gentoo/stage3:systemd AS customizer
 
 # Build options
-ARG BUILD_KDE=min
 ARG PulseAudio=socket
 ARG ENABLE_zh=true
 ARG ENABLE_dev=true
@@ -58,44 +57,25 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
     # Clean up distfiles
     && rm -rf /var/cache/distfiles/*
 
-# Install KDE desktop
+# Install KDE Plasma desktop (minimal: plasma-desktop + konsole + dolphin)
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
-    if [ "$BUILD_KDE" = "min" ] || [ "$BUILD_KDE" = "full" ]; then \
-        emerge \
-        kde-plasma/plasma-desktop \
-        kde-apps/konsole \
-        kde-apps/dolphin \
-        kde-plasma/powerdevil \
-        kde-plasma/kscreen \
-        kde-plasma/plasma-pa \
-        kde-apps/ark \
-        kde-apps/kate \
-        kde-plasma/kinfocenter \
-        sys-power/upower \
-        app-arch/xz \
-        app-arch/gzip \
-        app-arch/tar \
-        app-arch/unzip \
-        app-arch/zip \
-        && rm -rf /var/cache/distfiles/*; \
-    fi
-
-# Install full KDE suite
-RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
-    if [ "$BUILD_KDE" = "full" ]; then \
-        emerge \
-        kde-plasma/plasma-meta \
-        kde-apps/kde-apps-meta \
-        kde-apps/gwenview \
-        kde-apps/okular \
-        kde-apps/spectacle \
-        kde-apps/kcalc \
-        kde-apps/kfind \
-        kde-apps/filelight \
-        kde-plasma/plasma-browser-integration \
-        dev-util/vulkan-tools \
-        && rm -rf /var/cache/distfiles/*; \
-    fi
+    emerge \
+    kde-plasma/plasma-desktop \
+    kde-apps/konsole \
+    kde-apps/dolphin \
+    kde-plasma/powerdevil \
+    kde-plasma/kscreen \
+    kde-plasma/plasma-pa \
+    kde-apps/ark \
+    kde-apps/kate \
+    kde-plasma/kinfocenter \
+    sys-power/upower \
+    app-arch/xz \
+    app-arch/gzip \
+    app-arch/tar \
+    app-arch/unzip \
+    app-arch/zip \
+    && rm -rf /var/cache/distfiles/*
 
 # Install Chinese locale and input method
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
@@ -150,9 +130,9 @@ RUN if [ "$ENABLE_zh" = "true" ]; then \
 
 # Create normal user
 RUN useradd -m -s /bin/bash ${USERNAME} && \
-    echo "${USERNAME}:1234" | chpasswd && \
+    echo "${USERNAME}:12345678" | chpasswd && \
     usermod -aG wheel,audio,video,input ${USERNAME} && \
-    echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+    echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers
 
 # Environment variables
 RUN cat <<'EOF' > /etc/profile.d/custom_env.sh
@@ -287,17 +267,14 @@ echo "Post-extraction fixes applied on $(date)" > /etc/droidspaces
 EOF_RUN
 
 # KWin customization: disable compositing for better performance on Android
-RUN if [ "$BUILD_KDE" = "min" ] || [ "$BUILD_KDE" = "full" ]; then \
-        mkdir -p /home/${USERNAME}/.config && \
-        cat <<'EOF' > /home/${USERNAME}/.config/kwinrc
+RUN mkdir -p /home/${USERNAME}/.config && \
+    cat <<'EOF' > /home/${USERNAME}/.config/kwinrc
 [Compositing]
 Enabled=false
 EOF
-    fi
 
 # Create plasma-x11 systemd service (autostart KDE on boot)
-RUN if [ "$BUILD_KDE" = "min" ] || [ "$BUILD_KDE" = "full" ]; then \
-    cat <<EOF > /etc/systemd/system/plasma-x11.service
+RUN cat <<EOF > /etc/systemd/system/plasma-x11.service
 [Unit]
 Description=Start Plasma X11
 After=network.target dbus.service
@@ -314,8 +291,7 @@ RestartSec=3
 WantedBy=multi-user.target
 EOF
     mkdir -p /etc/systemd/system/multi-user.target.wants && \
-    ln -sf /etc/systemd/system/plasma-x11.service /etc/systemd/system/multi-user.target.wants/plasma-x11.service; \
-    fi
+    ln -sf /etc/systemd/system/plasma-x11.service /etc/systemd/system/multi-user.target.wants/plasma-x11.service
 
 # Set ownership of home directory
 RUN chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}
