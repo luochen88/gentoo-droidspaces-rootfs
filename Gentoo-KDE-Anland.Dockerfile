@@ -242,6 +242,8 @@ Categories=System;Utility;
 StartupNotify=false
 NoDisplay=true
 EOD
+      true; fi && \
+    if [ "$ENABLE_zh" = "true" ]; then \
         cat <<'EOD' >> /etc/profile.d/custom_env.sh
 export XMODIFIERS=@im=fcitx5
 export GTK_IM_MODULE=fcitx5
