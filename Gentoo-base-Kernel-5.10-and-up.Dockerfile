@@ -50,11 +50,10 @@ RUN emerge \
     # Development tools
     sys-devel/gcc \
     dev-build/cmake \
-    sys-devel/clang \
-    sys-devel/llvm \
+    llvm-core/clang \
+    llvm-core/llvm \
     dev-util/valgrind \
     dev-util/strace \
-    dev-util/ltrace \
     # Python
     dev-lang/python \
     dev-python/pip \
