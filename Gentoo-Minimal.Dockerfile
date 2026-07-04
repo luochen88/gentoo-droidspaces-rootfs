@@ -32,7 +32,7 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
     sys-apps/iproute2 \
     $EXTRA \
     # Clean up distfiles to reduce size
-    && rm -rf /var/cache/distfiles/*
+    && rm -rf /var/cache/distfiles/* /var/tmp/portage/*
 
 # Copy our bashrc script to the rootfs
 COPY scripts/bashrc.sh /etc/profile.d/ds-aliases.sh
@@ -164,8 +164,15 @@ fi
 echo "Post-extraction fixes applied on $(date)" > /etc/droidspaces
 EOF_RUN
 
-# Final cleanup — remove distfiles and package cache
-RUN rm -rf /var/cache/distfiles/* /var/db/repos/gentoo /usr/portage
+# Final cleanup — strip all build-time cruft
+RUN rm -rf \
+    /var/cache/distfiles/* \
+    /var/tmp/portage/* \
+    /var/cache/edb/* \
+    /var/db/repos/gentoo \
+    /usr/portage \
+    /var/log/*.log \
+    /var/log/portage
 
 # Stage 2: Export to scratch for extraction
 FROM scratch AS export
