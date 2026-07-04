@@ -49,7 +49,6 @@ RUN emerge \
     app-admin/logrotate \
     # Development tools
     sys-devel/gcc \
-    sys-devel/make \
     dev-build/cmake \
     sys-devel/clang \
     sys-devel/llvm \
