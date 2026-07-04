@@ -23,7 +23,8 @@ RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/pack
     # KDE needs X, wayland, opengl
     echo 'media-libs/mesa X wayland' >> /etc/portage/package.use/mesa && \
     echo 'x11-base/xorg-server xorg' >> /etc/portage/package.use/xorg && \
-    echo 'media-video/pipewire sound-server' >> /etc/portage/package.use/pipewire
+    echo 'media-video/pipewire sound-server' >> /etc/portage/package.use/pipewire && \
+    echo 'media-libs/libglvnd X' >> /etc/portage/package.use/libglvnd
 
 # Install base system packages (shell, network, tools)
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
