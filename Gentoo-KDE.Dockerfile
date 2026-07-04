@@ -151,28 +151,12 @@ RUN if [ "$PulseAudio" = "socket" ]; then \
 # Fcitx5 autostart
 RUN if [ "$ENABLE_zh" = "true" ]; then \
         mkdir -p /home/${USERNAME}/.config/autostart && \
-        cat <<'EOD' > /home/${USERNAME}/.config/autostart/fcitx5.desktop
-[Desktop Entry]
-Name=Fcitx5
-GenericName=Input Method
-Comment=Start Input Method
-Exec=fcitx5 -d
-Icon=fcitx
-Terminal=false
-Type=Application
-Categories=System;Utility;
-StartupNotify=false
-NoDisplay=true
-EOD
-      true; fi && \
-    if [ "$ENABLE_zh" = "true" ]; then \
-        cat <<'EOD' >> /etc/profile.d/custom_env.sh
-export XMODIFIERS=@im=fcitx5
-export GTK_IM_MODULE=fcitx5
-export QT_IM_MODULE=fcitx5
-export SDL_IM_MODULE=fcitx5
-export GLFW_IM_MODULE=fcitx
-EOD
+        printf '[Desktop Entry]\nName=Fcitx5\nGenericName=Input Method\nComment=Start Input Method\nExec=fcitx5 -d\nIcon=fcitx\nTerminal=false\nType=Application\nCategories=System;Utility;\nStartupNotify=false\nNoDisplay=true\n' > /home/${USERNAME}/.config/autostart/fcitx5.desktop && \
+        echo 'export XMODIFIERS=@im=fcitx5' >> /etc/profile.d/custom_env.sh && \
+        echo 'export GTK_IM_MODULE=fcitx5' >> /etc/profile.d/custom_env.sh && \
+        echo 'export QT_IM_MODULE=fcitx5' >> /etc/profile.d/custom_env.sh && \
+        echo 'export SDL_IM_MODULE=fcitx5' >> /etc/profile.d/custom_env.sh && \
+        echo 'export GLFW_IM_MODULE=fcitx' >> /etc/profile.d/custom_env.sh; \
     fi
 
 # Fix DHCP in the container
