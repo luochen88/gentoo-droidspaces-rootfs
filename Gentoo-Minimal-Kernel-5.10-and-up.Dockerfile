@@ -7,7 +7,8 @@ FROM gentoo/stage3:systemd AS customizer
 RUN emerge --sync && \
     emerge --oneshot sys-apps/portage && \
     echo 'FEATURES="${FEATURES} -ipc-sandbox -network-sandbox -pid-sandbox getbinpkg"' >> /etc/portage/make.conf && \
-    echo 'EMERGE_DEFAULT_OPTS="--jobs=$(nproc) --load-average=$(nproc) --getbinpkg --usepkg"' >> /etc/portage/make.conf
+    echo 'EMERGE_DEFAULT_OPTS="--jobs=$(nproc) --load-average=$(nproc) --getbinpkg --usepkg"' >> /etc/portage/make.conf && \
+    echo 'PORTAGE_BINHOST="https://gentoo.osuosl.org/experimental/arm64/binpkg/"' >> /etc/portage/make.conf
 
 # Install essential packages
 RUN emerge \
