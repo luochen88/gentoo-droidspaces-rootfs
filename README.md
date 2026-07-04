@@ -2,6 +2,8 @@
 
 Build Gentoo Linux rootfs tarballs for [Droidspaces](https://github.com/Droidspaces) — running Linux containers on Android.
 
+[中文](README_CN.md)
+
 ## Variants
 
 | Variant | Description |
