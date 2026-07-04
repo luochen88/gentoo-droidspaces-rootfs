@@ -52,8 +52,8 @@ RUN emerge \
     dev-build/cmake \
     llvm-core/clang \
     llvm-core/llvm \
-    dev-util/valgrind \
-    dev-util/strace \
+    dev-debug/valgrind \
+    dev-debug/strace \
     # Python
     dev-lang/python \
     dev-python/pip \
