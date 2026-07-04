@@ -55,8 +55,7 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
     media-video/pipewire \
     media-video/wireplumber \
     media-libs/libpulse \
-    # Clean up distfiles
-    && rm -rf /var/cache/distfiles/*
+    && rm -rf /var/cache/distfiles/* /var/tmp/portage/*
 
 # Install KDE Plasma desktop (minimal: plasma-desktop + konsole + dolphin)
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
@@ -76,7 +75,7 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
     app-arch/tar \
     app-arch/unzip \
     app-arch/zip \
-    && rm -rf /var/cache/distfiles/*
+    && rm -rf /var/cache/distfiles/* /var/tmp/portage/*
 
 # Install Chinese locale and input method
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
@@ -85,7 +84,7 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
         app-i18n/fcitx5 \
         app-i18n/fcitx5-chinese-addons \
         app-i18n/fcitx5-configtool \
-        && rm -rf /var/cache/distfiles/*; \
+        && rm -rf /var/cache/distfiles/* /var/tmp/portage/*; \
     fi
 
 # Install dev tools
@@ -99,7 +98,7 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
         dev-lang/python \
         dev-python/pip \
         dev-debug/strace \
-        && rm -rf /var/cache/distfiles/*; \
+        && rm -rf /var/cache/distfiles/* /var/tmp/portage/*; \
     fi
 
 # Copy our bashrc script to the rootfs
@@ -283,8 +282,17 @@ RUN mkdir -p /etc/systemd/system/multi-user.target.wants && \
 # Set ownership of home directory
 RUN chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}
 
-# Final cleanup — remove distfiles and portage tree to save space
-RUN rm -rf /var/cache/distfiles/* /var/db/repos/gentoo /usr/portage
+# Final cleanup — strip all build-time cruft
+RUN rm -rf \
+    /var/cache/distfiles/* \
+    /var/tmp/portage/* \
+    /var/cache/edb/* \
+    /var/db/repos/gentoo \
+    /usr/portage \
+    /var/log/*.log \
+    /var/log/portage \
+    /usr/share/gtk-doc \
+    /usr/share/doc/*
 
 # Stage 2: Export to scratch for extraction
 FROM scratch AS export
