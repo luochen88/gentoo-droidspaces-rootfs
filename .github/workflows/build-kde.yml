@@ -1,0 +1,61 @@
+name: Build KDE RootFS (kde branch)
+
+on:
+  push:
+    branches:
+      - kde
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Prepare Build Metadata
+        id: prep
+        run: |
+          BUILD_DATE=$(date +'%Y%m%d')
+          BUILD_ID="kde-v$(date +'%Y%m%d-%H%M%S')"
+          echo "BUILD_DATE=$BUILD_DATE" >> $GITHUB_OUTPUT
+          echo "BUILD_ID=$BUILD_ID" >> $GITHUB_OUTPUT
+          echo "Build ID: $BUILD_ID"
+
+      - name: Build RootFS (Gentoo-KDE)
+        run: |
+          chmod +x build_rootfs-native.sh
+          ./build_rootfs-native.sh -i Gentoo-KDE.Dockerfile -v "${{ steps.prep.outputs.build_id }}"
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Gentoo-KDE-rootfs
+          path: "*.tar.xz"
+          retention-days: 7
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Gentoo-KDE-rootfs
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.build.outputs.build_id || format('kde-v{0}', github.run_number) }}
+          name: "Gentoo KDE RootFS ${{ needs.build.outputs.build_id || format('kde-v{0}', github.run_number) }}"
+          files: "*.tar.xz"
+          body: |
+            Automated Gentoo KDE Plasma RootFS Build
+            Built on: ${{ steps.prep.outputs.build_date }}
+            Build ID: ${{ needs.build.outputs.build_id || format('kde-v{0}', github.run_number) }}
+          draft: false
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
