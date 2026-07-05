@@ -40,7 +40,7 @@ RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/pack
     echo 'kde-frameworks/kwindowsystem wayland X' >> /etc/portage/package.use/kwindowsystem && \
     echo 'sys-apps/systemd policykit' >> /etc/portage/package.use/systemd && \
     echo 'kde-frameworks/kconfig dbus qml' >> /etc/portage/package.use/kconfig && \
-    echo 'dev-qt/qt5compat qml' >> /etc/portage/package.use/qt5compat && \
+    echo 'dev-qt/qt5compat qml icu' >> /etc/portage/package.use/qt5compat && \
     echo 'dev-qt/qtdeclarative vulkan opengl' >> /etc/portage/package.use/qtdeclarative && \
     # Accept fcitx ecosystem for arm64 (keyword missing on this arch)
     echo 'app-i18n/fcitx* **' >> /etc/portage/package.accept_keywords/fcitx
