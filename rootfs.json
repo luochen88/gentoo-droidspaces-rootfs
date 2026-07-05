@@ -5,11 +5,11 @@
     "description": "Minimal Gentoo Linux rootfs with systemd and basic packages. (Runs on Kernel 5.10 and above only).",
     "architecture": "aarch64",
     "file": "Gentoo-Minimal.Dockerfile",
-    "download_url": "https://github.com/luochen88/gentoo-droidspaces-rootfs/releases/download/v20260704-194644/Gentoo-Minimal-Droidspaces-rootfs-aarch64-20260704-v20260704-194644.tar.xz",
-    "sha256": "309a1200fa86f6e11d7864dd8883d7f8815b0e5ae4d8d57b31b42afa0f9874dc",
-    "size_bytes": 343840284,
-    "version": "v20260704-194644",
-    "build_date": "20260704",
+    "download_url": "https://github.com/luochen88/gentoo-droidspaces-rootfs/releases/download/v20260705-014432/Gentoo-Minimal-Droidspaces-rootfs-aarch64-20260705-v20260705-014432.tar.xz",
+    "sha256": "847fb58b79a2a11aa3452d5c54749dc13b3e0e2e746cea682897cbe24c50c0c7",
+    "size_bytes": 343884808,
+    "version": "v20260705-014432",
+    "build_date": "20260705",
     "author": "luochen88"
   },
   {
@@ -18,11 +18,11 @@
     "description": "Gentoo Linux rootfs with systemd, basic packages, development tools, Python, and Docker. (Runs on Kernel 5.10 and above only).",
     "architecture": "aarch64",
     "file": "Gentoo-base.Dockerfile",
-    "download_url": "https://github.com/luochen88/gentoo-droidspaces-rootfs/releases/download/v20260704-194644/Gentoo-base-Droidspaces-rootfs-aarch64-20260704-v20260704-194644.tar.xz",
-    "sha256": "f57636852d5e3538395dfe7bf2c889865a0c076c0edc1e2ebe178544e52663e9",
-    "size_bytes": 573714412,
-    "version": "v20260704-194644",
-    "build_date": "20260704",
+    "download_url": "https://github.com/luochen88/gentoo-droidspaces-rootfs/releases/download/v20260705-014432/Gentoo-base-Droidspaces-rootfs-aarch64-20260705-v20260705-014432.tar.xz",
+    "sha256": "cd660233b7f99e57f2d9d4095ba254784f9a14d790e8221f25c19ed5d5db0b89",
+    "size_bytes": 573704052,
+    "version": "v20260705-014432",
+    "build_date": "20260705",
     "author": "luochen88"
   }
 ]
