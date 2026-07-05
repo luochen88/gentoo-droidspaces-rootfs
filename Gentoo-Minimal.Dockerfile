@@ -6,7 +6,7 @@ FROM gentoo/stage3:systemd AS customizer
 # Update Portage, configure for source build
 RUN emerge --sync && \
     emerge --oneshot sys-apps/portage && \
-    echo 'FEATURES="${FEATURES} -ipc-sandbox -network-sandbox -pid-sandbox noman noinfo nodoc"' >> /etc/portage/make.conf && \
+    echo 'FEATURES="-ipc-sandbox -network-sandbox -pid-sandbox noman noinfo nodoc"' >> /etc/portage/make.conf && \
     echo 'EMERGE_DEFAULT_OPTS="--jobs=$(nproc) --load-average=$(nproc) --quiet-build=y"' >> /etc/portage/make.conf
 
 # Copy optional extra packages list
