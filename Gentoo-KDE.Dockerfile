@@ -30,7 +30,7 @@ RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/pack
     echo 'media-video/pipewire sound-server' >> /etc/portage/package.use/pipewire && \
     echo 'media-libs/libglvnd X' >> /etc/portage/package.use/libglvnd && \
     echo 'media-libs/libcanberra alsa' >> /etc/portage/package.use/libcanberra && \
-    echo 'dev-qt/qtbase vulkan libproxy icu opengl wayland' >> /etc/portage/package.use/qtbase && \
+    echo 'dev-qt/qtbase libproxy icu opengl wayland' >> /etc/portage/package.use/qtbase && \
     echo 'dev-qt/qttools opengl' >> /etc/portage/package.use/qttools && \
     echo 'x11-libs/libxkbcommon X' >> /etc/portage/package.use/libxkbcommon && \
     echo 'x11-libs/cairo X' >> /etc/portage/package.use/cairo && \
