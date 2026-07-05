@@ -35,7 +35,12 @@ RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/pack
     echo 'sys-apps/systemd policykit' >> /etc/portage/package.use/systemd && \
     echo 'kde-frameworks/kconfig dbus qml' >> /etc/portage/package.use/kconfig && \
     echo 'dev-qt/qt5compat qml' >> /etc/portage/package.use/qt5compat && \
-    echo 'dev-qt/qtdeclarative vulkan opengl' >> /etc/portage/package.use/qtdeclarative
+    echo 'dev-qt/qtdeclarative vulkan opengl' >> /etc/portage/package.use/qtdeclarative && \
+    # Unmask ~arm64 packages (fcitx family not yet stable on arm64)
+    echo 'app-i18n/fcitx **' >> /etc/portage/package.accept_keywords/fcitx && \
+    echo 'app-i18n/fcitx-chinese-addons **' >> /etc/portage/package.accept_keywords/fcitx && \
+    echo 'app-i18n/fcitx-configtool **' >> /etc/portage/package.accept_keywords/fcitx && \
+    echo 'app-i18n/fcitx-rime **' >> /etc/portage/package.accept_keywords/fcitx
 
 # ── ONE emerge: all packages together (Catalyst-style) ──────────────────
 # This avoids USE flag conflicts between incremental emerges.
