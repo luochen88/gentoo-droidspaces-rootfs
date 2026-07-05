@@ -17,7 +17,10 @@ RUN echo "cachebust=${CACHEBUST}" ; \
     emerge --sync && \
     emerge --oneshot sys-apps/portage && \
     echo 'FEATURES="-ipc-sandbox -network-sandbox -pid-sandbox noman noinfo nodoc"' >> /etc/portage/make.conf && \
-    echo 'EMERGE_DEFAULT_OPTS="--jobs='"$(nproc)"' --load-average='"$(nproc)"' --quiet-build=y"' >> /etc/portage/make.conf
+    echo 'EMERGE_DEFAULT_OPTS="--jobs='"$(nproc)"' --load-average='"$(nproc)"' --quiet-build=y"' >> /etc/portage/make.conf && \
+    # Tell portage gdbus-codegen is already satisfied (prevents glib rebuild cascade)
+    mkdir -p /etc/portage/profile && \
+    echo 'dev-util/gdbus-codegen-2.88.2' >> /etc/portage/profile/package.provided
 
 # Accept KDE licenses and set USE flags
 RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/package.license && \
@@ -35,6 +38,8 @@ RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/pack
     echo 'dev-qt/qttools opengl' >> /etc/portage/package.use/qttools && \
     echo 'x11-libs/libxkbcommon X' >> /etc/portage/package.use/libxkbcommon && \
     echo 'x11-libs/cairo X' >> /etc/portage/package.use/cairo && \
+    echo 'x11-libs/pango X' >> /etc/portage/package.use/pango && \
+    echo 'sys-apps/dbus X' >> /etc/portage/package.use/dbus && \
     echo 'app-i18n/fcitx keyboard X' >> /etc/portage/package.use/fcitx && \
     echo 'media-libs/freetype harfbuzz' >> /etc/portage/package.use/freetype && \
     echo 'app-text/xmlto text' >> /etc/portage/package.use/xmlto && \
