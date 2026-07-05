@@ -94,24 +94,42 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
     && rm -rf /var/cache/distfiles/* /var/tmp/portage/*
 
 # Install KDE Plasma desktop
+# Use autounmask to let Portage resolve USE conflicts automatically
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
+    (emerge --autounmask-write --newuse --update \
+        kde-plasma/plasma-desktop \
+        kde-apps/konsole \
+        kde-apps/dolphin \
+        kde-plasma/powerdevil \
+        kde-plasma/kscreen \
+        kde-plasma/plasma-pa \
+        kde-apps/ark \
+        kde-apps/kate \
+        kde-plasma/kinfocenter \
+        sys-power/upower \
+        app-arch/xz-utils \
+        app-arch/gzip \
+        app-arch/tar \
+        app-arch/unzip \
+        app-arch/zip \
+        || true) && \
     emerge --newuse --update \
-    kde-plasma/plasma-desktop \
-    kde-apps/konsole \
-    kde-apps/dolphin \
-    kde-plasma/powerdevil \
-    kde-plasma/kscreen \
-    kde-plasma/plasma-pa \
-    kde-apps/ark \
-    kde-apps/kate \
-    kde-plasma/kinfocenter \
-    sys-power/upower \
-    app-arch/xz-utils \
-    app-arch/gzip \
-    app-arch/tar \
-    app-arch/unzip \
-    app-arch/zip \
-    && rm -rf /var/cache/distfiles/* /var/tmp/portage/*
+        kde-plasma/plasma-desktop \
+        kde-apps/konsole \
+        kde-apps/dolphin \
+        kde-plasma/powerdevil \
+        kde-plasma/kscreen \
+        kde-plasma/plasma-pa \
+        kde-apps/ark \
+        kde-apps/kate \
+        kde-plasma/kinfocenter \
+        sys-power/upower \
+        app-arch/xz-utils \
+        app-arch/gzip \
+        app-arch/tar \
+        app-arch/unzip \
+        app-arch/zip \
+        && rm -rf /var/cache/distfiles/* /var/tmp/portage/*
 
 # ── Anland Daemon (方案A: 从源码编译) ────────────────────────────────────────
 RUN git clone --depth=1 https://github.com/superturtlee/anland.git /tmp/anland && \
