@@ -50,6 +50,7 @@ RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/pack
     echo 'kde-frameworks/prison qml' >> /etc/portage/package.use/prison && \
     echo 'dev-libs/qcoro dbus' >> /etc/portage/package.use/qcoro && \
     echo 'x11-base/xwayland libei' >> /etc/portage/package.use/xwayland && \
+    echo 'sys-libs/zlib minizip' >> /etc/portage/package.use/zlib && \
     echo 'dev-qt/qt5compat qml icu' >> /etc/portage/package.use/qt5compat && \
     echo 'dev-qt/qtdeclarative vulkan opengl' >> /etc/portage/package.use/qtdeclarative && \
     # Accept fcitx ecosystem for arm64 (keyword missing on this arch)
