@@ -3,7 +3,7 @@
 ARG TARGETPLATFORM
 FROM gentoo/stage3:systemd AS customizer
 
-# Cache bust — change this value (or pass via --build-arg) to force rebuild
+# Cache bust for CI rebuilds
 ARG CACHEBUST=0
 
 # Build options
@@ -24,11 +24,10 @@ RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/pack
     echo 'x11-libs/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/package.license && \
     echo 'kde-apps/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/package.license && \
     echo 'kde-frameworks/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/package.license && \
-    # KDE needs X, wayland, opengl
     echo 'media-libs/mesa X wayland' >> /etc/portage/package.use/mesa && \
-    echo 'media-libs/libglvnd X' >> /etc/portage/package.use/libglvnd && \
     echo 'x11-base/xorg-server xorg' >> /etc/portage/package.use/xorg && \
     echo 'media-video/pipewire sound-server' >> /etc/portage/package.use/pipewire && \
+    echo 'media-libs/libglvnd X' >> /etc/portage/package.use/libglvnd && \
     echo 'media-libs/libcanberra alsa' >> /etc/portage/package.use/libcanberra && \
     echo 'dev-qt/qtbase vulkan libproxy icu opengl wayland' >> /etc/portage/package.use/qtbase && \
     echo 'app-text/xmlto text' >> /etc/portage/package.use/xmlto && \
@@ -38,41 +37,35 @@ RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/pack
     echo 'dev-qt/qt5compat qml' >> /etc/portage/package.use/qt5compat && \
     echo 'dev-qt/qtdeclarative vulkan opengl' >> /etc/portage/package.use/qtdeclarative
 
-# Install base system packages (shell, network, tools)
+# ── ONE emerge: all packages together (Catalyst-style) ──────────────────
+# This avoids USE flag conflicts between incremental emerges.
+# Portage resolves the full dependency tree once.
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
-    emerge --newuse --update \
-    app-shells/bash \
-    net-misc/curl \
-    app-misc/ca-certificates \
-    dev-vcs/git \
-    app-editors/nano \
-    app-admin/sudo \
-    net-misc/openssh \
-    sys-apps/net-tools \
-    net-firewall/iptables \
-    net-misc/iputils \
-    sys-apps/iproute2 \
-    sys-process/htop \
-    sys-process/procps \
-    app-shells/bash-completion \
-    # X11 + fonts
-    x11-base/xorg-server \
-    x11-apps/xrandr \
-    x11-apps/xset \
-    x11-apps/xrdb \
-    media-fonts/noto \
-    media-fonts/noto-cjk \
-    media-fonts/noto-emoji \
-    # Audio (PipeWire)
-    media-video/pipewire \
-    media-video/wireplumber \
-    media-libs/libpulse \
-    && rm -rf /var/cache/distfiles/* /var/tmp/portage/*
-
-# Install KDE Plasma desktop (minimal: plasma-desktop + konsole + dolphin)
-# Use autounmask to let Portage resolve USE conflicts automatically
-RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
-    (emerge --autounmask-write --newuse --update \
+    PKGS="\
+        app-shells/bash \
+        net-misc/curl \
+        app-misc/ca-certificates \
+        dev-vcs/git \
+        app-editors/nano \
+        app-admin/sudo \
+        net-misc/openssh \
+        sys-apps/net-tools \
+        net-firewall/iptables \
+        net-misc/iputils \
+        sys-apps/iproute2 \
+        sys-process/htop \
+        sys-process/procps \
+        app-shells/bash-completion \
+        x11-base/xorg-server \
+        x11-apps/xrandr \
+        x11-apps/xset \
+        x11-apps/xrdb \
+        media-fonts/noto \
+        media-fonts/noto-cjk \
+        media-fonts/noto-emoji \
+        media-video/pipewire \
+        media-video/wireplumber \
+        media-libs/libpulse \
         kde-plasma/plasma-desktop \
         kde-apps/konsole \
         kde-apps/dolphin \
@@ -88,48 +81,15 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
         app-arch/tar \
         app-arch/unzip \
         app-arch/zip \
-        || true) && \
-    emerge --newuse --update \
-        kde-plasma/plasma-desktop \
-        kde-apps/konsole \
-        kde-apps/dolphin \
-        kde-plasma/powerdevil \
-        kde-plasma/kscreen \
-        kde-plasma/plasma-pa \
-        kde-apps/ark \
-        kde-apps/kate \
-        kde-plasma/kinfocenter \
-        sys-power/upower \
-        app-arch/xz-utils \
-        app-arch/gzip \
-        app-arch/tar \
-        app-arch/unzip \
-        app-arch/zip \
-        && rm -rf /var/cache/distfiles/* /var/tmp/portage/*
-
-# Install Chinese locale and input method
-RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
-    if [ "$ENABLE_zh" = "true" ]; then \
-        emerge --newuse --update \
-        app-i18n/fcitx5 \
-        app-i18n/fcitx5-chinese-addons \
-        app-i18n/fcitx5-configtool \
-        && rm -rf /var/cache/distfiles/* /var/tmp/portage/*; \
-    fi
-
-# Install dev tools
-RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
-    if [ "$ENABLE_dev" = "true" ]; then \
-        emerge --newuse --update \
-        sys-devel/gcc \
-        dev-build/cmake \
-        llvm-core/clang \
-        llvm-core/llvm \
-        dev-lang/python \
-        dev-python/pip \
-        dev-debug/strace \
-        && rm -rf /var/cache/distfiles/* /var/tmp/portage/*; \
-    fi
+    " && \
+    if [ \"$ENABLE_zh\" = \"true\" ]; then \
+        PKGS=\"$PKGS app-i18n/fcitx5 app-i18n/fcitx5-chinese-addons app-i18n/fcitx5-configtool\"; \
+    fi && \
+    if [ \"$ENABLE_dev\" = \"true\" ]; then \
+        PKGS=\"$PKGS sys-devel/gcc dev-build/cmake llvm-core/clang llvm-core/llvm dev-lang/python dev-python/pip dev-debug/strace\"; \
+    fi && \
+    emerge --newuse --update --deep --backtrack=100 $PKGS && \
+    rm -rf /var/cache/distfiles/* /var/tmp/portage/*
 
 # Copy our bashrc script to the rootfs
 COPY scripts/bashrc.sh /etc/profile.d/ds-aliases.sh
@@ -306,7 +266,7 @@ RestartSec=3
 [Install]
 WantedBy=multi-user.target
 EOF
-RUN mkdir -p /etc/systemd/system/multi-user.target.wants && \
+    mkdir -p /etc/systemd/system/multi-user.target.wants && \
     ln -sf /etc/systemd/system/plasma-x11.service /etc/systemd/system/multi-user.target.wants/plasma-x11.service
 
 # Set ownership of home directory
