@@ -70,24 +70,42 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
     && rm -rf /var/cache/distfiles/* /var/tmp/portage/*
 
 # Install KDE Plasma desktop (minimal: plasma-desktop + konsole + dolphin)
+# Use autounmask to let Portage resolve USE conflicts automatically
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
+    (emerge --autounmask-write --newuse --update \
+        kde-plasma/plasma-desktop \
+        kde-apps/konsole \
+        kde-apps/dolphin \
+        kde-plasma/powerdevil \
+        kde-plasma/kscreen \
+        kde-plasma/plasma-pa \
+        kde-apps/ark \
+        kde-apps/kate \
+        kde-plasma/kinfocenter \
+        sys-power/upower \
+        app-arch/xz-utils \
+        app-arch/gzip \
+        app-arch/tar \
+        app-arch/unzip \
+        app-arch/zip \
+        || true) && \
     emerge --newuse --update \
-    kde-plasma/plasma-desktop \
-    kde-apps/konsole \
-    kde-apps/dolphin \
-    kde-plasma/powerdevil \
-    kde-plasma/kscreen \
-    kde-plasma/plasma-pa \
-    kde-apps/ark \
-    kde-apps/kate \
-    kde-plasma/kinfocenter \
-    sys-power/upower \
-    app-arch/xz-utils \
-    app-arch/gzip \
-    app-arch/tar \
-    app-arch/unzip \
-    app-arch/zip \
-    && rm -rf /var/cache/distfiles/* /var/tmp/portage/*
+        kde-plasma/plasma-desktop \
+        kde-apps/konsole \
+        kde-apps/dolphin \
+        kde-plasma/powerdevil \
+        kde-plasma/kscreen \
+        kde-plasma/plasma-pa \
+        kde-apps/ark \
+        kde-apps/kate \
+        kde-plasma/kinfocenter \
+        sys-power/upower \
+        app-arch/xz-utils \
+        app-arch/gzip \
+        app-arch/tar \
+        app-arch/unzip \
+        app-arch/zip \
+        && rm -rf /var/cache/distfiles/* /var/tmp/portage/*
 
 # Install Chinese locale and input method
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
