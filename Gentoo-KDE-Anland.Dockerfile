@@ -46,11 +46,18 @@ RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/pack
     echo 'x11-base/xorg-server xorg' >> /etc/portage/package.use/xorg && \
     echo 'media-video/pipewire sound-server' >> /etc/portage/package.use/pipewire && \
     echo 'media-libs/libcanberra alsa' >> /etc/portage/package.use/libcanberra && \
-    echo 'media-libs/libglvnd X' >> /etc/portage/package.use/libglvnd
+    echo 'media-libs/libglvnd X' >> /etc/portage/package.use/libglvnd && \
+    echo 'dev-qt/qtbase vulkan libproxy icu opengl wayland' >> /etc/portage/package.use/qtbase && \
+    echo 'app-text/xmlto text' >> /etc/portage/package.use/xmlto && \
+    echo 'kde-frameworks/kwindowsystem wayland X' >> /etc/portage/package.use/kwindowsystem && \
+    echo 'sys-apps/systemd policykit' >> /etc/portage/package.use/systemd && \
+    echo 'kde-frameworks/kconfig dbus qml' >> /etc/portage/package.use/kconfig && \
+    echo 'dev-qt/qt5compat qml' >> /etc/portage/package.use/qt5compat && \
+    echo 'dev-qt/qtdeclarative vulkan opengl' >> /etc/portage/package.use/qtdeclarative
 
 # Install base system packages (shell, network, tools)
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
-    emerge \
+    emerge --newuse --update \
     app-shells/bash \
     net-misc/curl \
     app-misc/ca-certificates \
@@ -88,7 +95,7 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
 
 # Install KDE Plasma desktop
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
-    emerge \
+    emerge --newuse --update \
     kde-plasma/plasma-desktop \
     kde-apps/konsole \
     kde-apps/dolphin \
@@ -136,7 +143,7 @@ EOF
 # Install Chinese locale and input method
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
     if [ "$ENABLE_zh" = "true" ]; then \
-        emerge \
+        emerge --newuse --update \
         app-i18n/fcitx5 \
         app-i18n/fcitx5-chinese-addons \
         app-i18n/fcitx5-configtool \
@@ -146,7 +153,7 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
 # Install dev tools
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
     if [ "$ENABLE_dev" = "true" ]; then \
-        emerge \
+        emerge --newuse --update \
         sys-devel/gcc \
         llvm-core/clang \
         llvm-core/llvm \
