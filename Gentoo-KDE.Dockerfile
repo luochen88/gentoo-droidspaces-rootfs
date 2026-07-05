@@ -3,6 +3,9 @@
 ARG TARGETPLATFORM
 FROM gentoo/stage3:systemd AS customizer
 
+# Cache bust for CI rebuilds
+ARG CACHEBUST=0
+
 # Build options
 ARG PulseAudio=socket
 ARG ENABLE_zh=true
@@ -10,9 +13,10 @@ ARG ENABLE_dev=true
 ARG USERNAME=luochen570
 
 # Update Portage, configure for source build
-RUN emerge --sync && \
+RUN echo "cachebust=${CACHEBUST}" ; \
+    emerge --sync && \
     emerge --oneshot sys-apps/portage && \
-    echo 'FEATURES="${FEATURES} -ipc-sandbox -network-sandbox -pid-sandbox noman noinfo nodoc"' >> /etc/portage/make.conf && \
+    echo 'FEATURES="-ipc-sandbox -network-sandbox -pid-sandbox noman noinfo nodoc"' >> /etc/portage/make.conf && \
     echo 'EMERGE_DEFAULT_OPTS="--jobs=$(nproc) --load-average=$(nproc) --quiet-build=y"' >> /etc/portage/make.conf
 
 # Accept KDE licenses and set USE flags
@@ -20,7 +24,6 @@ RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/pack
     echo 'x11-libs/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/package.license && \
     echo 'kde-apps/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/package.license && \
     echo 'kde-frameworks/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/package.license && \
-    # KDE needs X, wayland, opengl
     echo 'media-libs/mesa X wayland' >> /etc/portage/package.use/mesa && \
     echo 'x11-base/xorg-server xorg' >> /etc/portage/package.use/xorg && \
     echo 'media-video/pipewire sound-server' >> /etc/portage/package.use/pipewire && \
@@ -34,81 +37,59 @@ RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/pack
     echo 'dev-qt/qt5compat qml' >> /etc/portage/package.use/qt5compat && \
     echo 'dev-qt/qtdeclarative vulkan opengl' >> /etc/portage/package.use/qtdeclarative
 
-# Install base system packages (shell, network, tools)
+# ── ONE emerge: all packages together (Catalyst-style) ──────────────────
+# This avoids USE flag conflicts between incremental emerges.
+# Portage resolves the full dependency tree once.
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
-    emerge --newuse --update \
-    app-shells/bash \
-    net-misc/curl \
-    app-misc/ca-certificates \
-    dev-vcs/git \
-    app-editors/nano \
-    app-admin/sudo \
-    net-misc/openssh \
-    sys-apps/net-tools \
-    net-firewall/iptables \
-    net-misc/iputils \
-    sys-apps/iproute2 \
-    sys-process/htop \
-    sys-process/procps \
-    app-shells/bash-completion \
-    # X11 + fonts
-    x11-base/xorg-server \
-    x11-apps/xrandr \
-    x11-apps/xset \
-    x11-apps/xrdb \
-    media-fonts/noto \
-    media-fonts/noto-cjk \
-    media-fonts/noto-emoji \
-    # Audio (PipeWire)
-    media-video/pipewire \
-    media-video/wireplumber \
-    media-libs/libpulse \
-    # Clean up distfiles
-    && rm -rf /var/cache/distfiles/* /var/tmp/portage/*
-
-# Install KDE Plasma desktop (minimal: plasma-desktop + konsole + dolphin)
-RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
-    emerge --newuse --update \
-    kde-plasma/plasma-desktop \
-    kde-apps/konsole \
-    kde-apps/dolphin \
-    kde-plasma/powerdevil \
-    kde-plasma/kscreen \
-    kde-plasma/plasma-pa \
-    kde-apps/ark \
-    kde-apps/kate \
-    kde-plasma/kinfocenter \
-    sys-power/upower \
-    app-arch/xz-utils \
-    app-arch/gzip \
-    app-arch/tar \
-    app-arch/unzip \
-    app-arch/zip \
-    && rm -rf /var/cache/distfiles/* /var/tmp/portage/*
-
-# Install Chinese locale and input method
-RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
-    if [ "$ENABLE_zh" = "true" ]; then \
-        emerge --newuse --update \
-        app-i18n/fcitx5 \
-        app-i18n/fcitx5-chinese-addons \
-        app-i18n/fcitx5-configtool \
-        && rm -rf /var/cache/distfiles/* /var/tmp/portage/*; \
-    fi
-
-# Install dev tools
-RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
-    if [ "$ENABLE_dev" = "true" ]; then \
-        emerge --newuse --update \
-        sys-devel/gcc \
-        dev-build/cmake \
-        llvm-core/clang \
-        llvm-core/llvm \
-        dev-lang/python \
-        dev-python/pip \
-        dev-debug/strace \
-        && rm -rf /var/cache/distfiles/* /var/tmp/portage/*; \
-    fi
+    PKGS="\
+        app-shells/bash \
+        net-misc/curl \
+        app-misc/ca-certificates \
+        dev-vcs/git \
+        app-editors/nano \
+        app-admin/sudo \
+        net-misc/openssh \
+        sys-apps/net-tools \
+        net-firewall/iptables \
+        net-misc/iputils \
+        sys-apps/iproute2 \
+        sys-process/htop \
+        sys-process/procps \
+        app-shells/bash-completion \
+        x11-base/xorg-server \
+        x11-apps/xrandr \
+        x11-apps/xset \
+        x11-apps/xrdb \
+        media-fonts/noto \
+        media-fonts/noto-cjk \
+        media-fonts/noto-emoji \
+        media-video/pipewire \
+        media-video/wireplumber \
+        media-libs/libpulse \
+        kde-plasma/plasma-desktop \
+        kde-apps/konsole \
+        kde-apps/dolphin \
+        kde-plasma/powerdevil \
+        kde-plasma/kscreen \
+        kde-plasma/plasma-pa \
+        kde-apps/ark \
+        kde-apps/kate \
+        kde-plasma/kinfocenter \
+        sys-power/upower \
+        app-arch/xz-utils \
+        app-arch/gzip \
+        app-arch/tar \
+        app-arch/unzip \
+        app-arch/zip \
+    " && \
+    if [ \"$ENABLE_zh\" = \"true\" ]; then \
+        PKGS=\"$PKGS app-i18n/fcitx5 app-i18n/fcitx5-chinese-addons app-i18n/fcitx5-configtool\"; \
+    fi && \
+    if [ \"$ENABLE_dev\" = \"true\" ]; then \
+        PKGS=\"$PKGS sys-devel/gcc dev-build/cmake llvm-core/clang llvm-core/llvm dev-lang/python dev-python/pip dev-debug/strace\"; \
+    fi && \
+    emerge --newuse --update --deep --backtrack=100 $PKGS && \
+    rm -rf /var/cache/distfiles/* /var/tmp/portage/*
 
 # Copy our bashrc script to the rootfs
 COPY scripts/bashrc.sh /etc/profile.d/ds-aliases.sh
@@ -291,8 +272,17 @@ EOF
 # Set ownership of home directory
 RUN chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}
 
-# Final cleanup — remove distfiles and portage tree to save space
-RUN rm -rf /var/cache/distfiles/* /var/db/repos/gentoo /usr/portage
+# Final cleanup — strip all build-time cruft
+RUN rm -rf \
+    /var/cache/distfiles/* \
+    /var/tmp/portage/* \
+    /var/cache/edb/* \
+    /var/db/repos/gentoo \
+    /usr/portage \
+    /var/log/*.log \
+    /var/log/portage \
+    /usr/share/gtk-doc \
+    /usr/share/doc/*
 
 # Stage 2: Export to scratch for extraction
 FROM scratch AS export
