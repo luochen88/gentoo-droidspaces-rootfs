@@ -14,8 +14,6 @@ ARG USERNAME=luochen570
 
 # Update Portage, configure for source build
 RUN echo "cachebust=${CACHEBUST}" ; \
-    emerge --sync && \
-    emerge --oneshot sys-apps/portage && \
     echo 'FEATURES="-ipc-sandbox -network-sandbox -pid-sandbox noman noinfo nodoc"' >> /etc/portage/make.conf && \
     echo 'EMERGE_DEFAULT_OPTS="--jobs='"$(nproc)"' --load-average='"$(nproc)"' --quiet-build=y"' >> /etc/portage/make.conf && \
     echo 'USE="X"' >> /etc/portage/make.conf
