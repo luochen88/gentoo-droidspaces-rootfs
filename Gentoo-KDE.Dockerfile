@@ -41,7 +41,7 @@ RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/pack
 # This avoids USE flag conflicts between incremental emerges.
 # Portage resolves the full dependency tree once.
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
-    PKGS="\
+    emerge --newuse --update --deep --backtrack=100 \
         app-shells/bash \
         net-misc/curl \
         app-misc/ca-certificates \
@@ -81,15 +81,17 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
         app-arch/tar \
         app-arch/unzip \
         app-arch/zip \
-    " && \
-    if [ \"$ENABLE_zh\" = \"true\" ]; then \
-        PKGS=\"$PKGS app-i18n/fcitx5 app-i18n/fcitx5-chinese-addons app-i18n/fcitx5-configtool\"; \
-    fi && \
-    if [ \"$ENABLE_dev\" = \"true\" ]; then \
-        PKGS=\"$PKGS sys-devel/gcc dev-build/cmake llvm-core/clang llvm-core/llvm dev-lang/python dev-python/pip dev-debug/strace\"; \
-    fi && \
-    emerge --newuse --update --deep --backtrack=100 $PKGS && \
-    rm -rf /var/cache/distfiles/* /var/tmp/portage/*
+        app-i18n/fcitx5 \
+        app-i18n/fcitx5-chinese-addons \
+        app-i18n/fcitx5-configtool \
+        sys-devel/gcc \
+        dev-build/cmake \
+        llvm-core/clang \
+        llvm-core/llvm \
+        dev-lang/python \
+        dev-python/pip \
+        dev-debug/strace \
+        && rm -rf /var/cache/distfiles/* /var/tmp/portage/*
 
 # Copy our bashrc script to the rootfs
 COPY scripts/bashrc.sh /etc/profile.d/ds-aliases.sh
