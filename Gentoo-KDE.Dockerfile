@@ -60,7 +60,7 @@ RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/pack
 # This avoids USE flag conflicts between incremental emerges.
 # Portage resolves the full dependency tree once.
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
-    emerge --newuse --with-bdeps=n --backtrack=100 \
+    emerge --newuse --update --deep --backtrack=200 @world \
         app-shells/bash \
         net-misc/curl \
         app-misc/ca-certificates \
