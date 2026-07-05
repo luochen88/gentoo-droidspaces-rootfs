@@ -14,14 +14,13 @@ ARG USERNAME=luochen570
 
 # Update Portage, configure for source build
 RUN echo "cachebust=${CACHEBUST}" ; \
-    # Use dated portage snapshot for version stability (avoid glib/gobject-introspection mismatch)
-    wget -q -O /tmp/portage-snapshot.tar.xz https://distfiles.gentoo.org/snapshots/portage-20250601.tar.xz && \
-    mkdir -p /var/db/repos/gentoo && \
-    tar -xf /tmp/portage-snapshot.tar.xz -C /var/db/repos/gentoo --strip-components=1 && \
-    rm /tmp/portage-snapshot.tar.xz && \
+    emerge --sync && \
     emerge --oneshot sys-apps/portage && \
     echo 'FEATURES="-ipc-sandbox -network-sandbox -pid-sandbox noman noinfo nodoc"' >> /etc/portage/make.conf && \
-    echo 'EMERGE_DEFAULT_OPTS="--jobs='"$(nproc)"' --load-average='"$(nproc)"' --quiet-build=y"' >> /etc/portage/make.conf
+    echo 'EMERGE_DEFAULT_OPTS="--jobs='"$(nproc)"' --load-average='"$(nproc)"' --quiet-build=y"' >> /etc/portage/make.conf && \
+    # Stage3 Docker image lacks dev files — force-install both with --nodeps
+    emerge --oneshot --nodeps dev-libs/gobject-introspection && \
+    emerge --oneshot --nodeps dev-libs/glib
 
 # Accept KDE licenses and set USE flags
 RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/package.license && \
