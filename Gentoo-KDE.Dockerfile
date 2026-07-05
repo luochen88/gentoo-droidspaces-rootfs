@@ -21,8 +21,7 @@ RUN echo "cachebust=${CACHEBUST}" ; \
     # Tell portage gdbus-codegen is already satisfied (prevents glib rebuild cascade)
     mkdir -p /etc/portage/profile && \
     echo 'dev-util/gdbus-codegen-2.88.2' >> /etc/portage/profile/package.provided && \
-    echo 'dev-libs/glib-2.88.2' >> /etc/portage/profile/package.provided && \
-    echo 'dev-libs/gobject-introspection-1.84.0' >> /etc/portage/profile/package.provided
+    echo 'dev-libs/gobject-introspection-1.86.0' >> /etc/portage/profile/package.provided
 
 # Accept KDE licenses and set USE flags
 RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/package.license && \
