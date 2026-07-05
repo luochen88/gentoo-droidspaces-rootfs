@@ -32,6 +32,7 @@ RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/pack
     echo 'media-libs/libcanberra alsa' >> /etc/portage/package.use/libcanberra && \
     echo 'dev-qt/qtbase vulkan libproxy icu opengl wayland cups' >> /etc/portage/package.use/qtbase && \
     echo 'dev-qt/qtmultimedia opengl vulkan qml' >> /etc/portage/package.use/qtmultimedia && \
+    echo 'dev-qt/qtquick3d opengl vulkan' >> /etc/portage/package.use/qtquick3d && \
     echo 'dev-qt/qttools opengl' >> /etc/portage/package.use/qttools && \
     echo 'x11-libs/libxkbcommon X' >> /etc/portage/package.use/libxkbcommon && \
     echo 'x11-libs/cairo X' >> /etc/portage/package.use/cairo && \
