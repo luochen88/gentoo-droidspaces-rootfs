@@ -250,22 +250,7 @@ Enabled=false
 EOF
 
 # Create plasma-x11 systemd service (autostart KDE on boot)
-RUN cat <<EOF > /etc/systemd/system/plasma-x11.service
-[Unit]
-Description=Start Plasma X11
-After=network.target dbus.service
-
-[Service]
-Type=simple
-User=${USERNAME}
-EnvironmentFile=-/etc/environment
-ExecStart=/bin/bash -lc 'DISPLAY=:5 startplasma-x11'
-Restart=no
-RestartSec=3
-
-[Install]
-WantedBy=multi-user.target
-EOF
+RUN printf '[Unit]\nDescription=Start Plasma X11\nAfter=network.target dbus.service\n\n[Service]\nType=simple\nUser=%s\nEnvironmentFile=-/etc/environment\nExecStart=/bin/bash -lc '\''DISPLAY=:5 startplasma-x11'\''\nRestart=no\nRestartSec=3\n\n[Install]\nWantedBy=multi-user.target\n' "${USERNAME}" > /etc/systemd/system/plasma-x11.service && \
     mkdir -p /etc/systemd/system/multi-user.target.wants && \
     ln -sf /etc/systemd/system/plasma-x11.service /etc/systemd/system/multi-user.target.wants/plasma-x11.service
 
