@@ -24,11 +24,19 @@ RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/pack
     echo 'media-libs/mesa X wayland' >> /etc/portage/package.use/mesa && \
     echo 'x11-base/xorg-server xorg' >> /etc/portage/package.use/xorg && \
     echo 'media-video/pipewire sound-server' >> /etc/portage/package.use/pipewire && \
-    echo 'media-libs/libglvnd X' >> /etc/portage/package.use/libglvnd
+    echo 'media-libs/libglvnd X' >> /etc/portage/package.use/libglvnd && \
+    echo 'media-libs/libcanberra alsa' >> /etc/portage/package.use/libcanberra && \
+    echo 'dev-qt/qtbase vulkan libproxy icu opengl wayland' >> /etc/portage/package.use/qtbase && \
+    echo 'app-text/xmlto text' >> /etc/portage/package.use/xmlto && \
+    echo 'kde-frameworks/kwindowsystem wayland X' >> /etc/portage/package.use/kwindowsystem && \
+    echo 'sys-apps/systemd policykit' >> /etc/portage/package.use/systemd && \
+    echo 'kde-frameworks/kconfig dbus qml' >> /etc/portage/package.use/kconfig && \
+    echo 'dev-qt/qt5compat qml' >> /etc/portage/package.use/qt5compat && \
+    echo 'dev-qt/qtdeclarative vulkan opengl' >> /etc/portage/package.use/qtdeclarative
 
 # Install base system packages (shell, network, tools)
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
-    emerge \
+    emerge --newuse --update \
     app-shells/bash \
     net-misc/curl \
     app-misc/ca-certificates \
@@ -56,11 +64,11 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
     media-video/wireplumber \
     media-libs/libpulse \
     # Clean up distfiles
-    && rm -rf /var/cache/distfiles/*
+    && rm -rf /var/cache/distfiles/* /var/tmp/portage/*
 
 # Install KDE Plasma desktop (minimal: plasma-desktop + konsole + dolphin)
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
-    emerge \
+    emerge --newuse --update \
     kde-plasma/plasma-desktop \
     kde-apps/konsole \
     kde-apps/dolphin \
@@ -71,27 +79,27 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
     kde-apps/kate \
     kde-plasma/kinfocenter \
     sys-power/upower \
-    app-arch/xz \
+    app-arch/xz-utils \
     app-arch/gzip \
     app-arch/tar \
     app-arch/unzip \
     app-arch/zip \
-    && rm -rf /var/cache/distfiles/*
+    && rm -rf /var/cache/distfiles/* /var/tmp/portage/*
 
 # Install Chinese locale and input method
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
     if [ "$ENABLE_zh" = "true" ]; then \
-        emerge \
+        emerge --newuse --update \
         app-i18n/fcitx5 \
         app-i18n/fcitx5-chinese-addons \
         app-i18n/fcitx5-configtool \
-        && rm -rf /var/cache/distfiles/*; \
+        && rm -rf /var/cache/distfiles/* /var/tmp/portage/*; \
     fi
 
 # Install dev tools
 RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
     if [ "$ENABLE_dev" = "true" ]; then \
-        emerge \
+        emerge --newuse --update \
         sys-devel/gcc \
         dev-build/cmake \
         llvm-core/clang \
@@ -99,7 +107,7 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
         dev-lang/python \
         dev-python/pip \
         dev-debug/strace \
-        && rm -rf /var/cache/distfiles/*; \
+        && rm -rf /var/cache/distfiles/* /var/tmp/portage/*; \
     fi
 
 # Copy our bashrc script to the rootfs
