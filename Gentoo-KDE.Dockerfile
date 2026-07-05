@@ -84,6 +84,7 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
         app-i18n/fcitx \
         app-i18n/fcitx-chinese-addons \
         app-i18n/fcitx-configtool \
+        app-i18n/fcitx-rime \
         sys-devel/gcc \
         dev-build/cmake \
         llvm-core/clang \
