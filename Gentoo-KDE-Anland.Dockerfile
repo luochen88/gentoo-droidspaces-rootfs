@@ -13,7 +13,7 @@ ARG USERNAME=luochen570
 # Update Portage, configure for source build
 RUN emerge --sync && \
     emerge --oneshot sys-apps/portage && \
-    echo 'FEATURES="${FEATURES} -ipc-sandbox -network-sandbox -pid-sandbox noman noinfo nodoc"' >> /etc/portage/make.conf && \
+    echo 'FEATURES="-ipc-sandbox -network-sandbox -pid-sandbox noman noinfo nodoc"' >> /etc/portage/make.conf && \
     echo 'EMERGE_DEFAULT_OPTS="--jobs=$(nproc) --load-average=$(nproc) --quiet-build=y"' >> /etc/portage/make.conf
 
 # ── Droidspaces Overlay ────────────────────────────────────────────────────
@@ -98,7 +98,7 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
     kde-apps/kate \
     kde-plasma/kinfocenter \
     sys-power/upower \
-    app-arch/xz \
+    app-arch/xz-utils \
     app-arch/gzip \
     app-arch/tar \
     app-arch/unzip \
