@@ -30,8 +30,8 @@ RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/pack
     echo 'media-video/pipewire sound-server' >> /etc/portage/package.use/pipewire && \
     echo 'media-libs/libglvnd X' >> /etc/portage/package.use/libglvnd && \
     echo 'media-libs/libcanberra alsa' >> /etc/portage/package.use/libcanberra && \
-    echo 'dev-qt/qtbase vulkan libproxy icu opengl wayland' >> /etc/portage/package.use/qtbase && \
-    echo 'dev-qt/qtmultimedia opengl vulkan' >> /etc/portage/package.use/qtmultimedia && \
+    echo 'dev-qt/qtbase vulkan libproxy icu opengl wayland cups' >> /etc/portage/package.use/qtbase && \
+    echo 'dev-qt/qtmultimedia opengl vulkan qml' >> /etc/portage/package.use/qtmultimedia && \
     echo 'dev-qt/qttools opengl' >> /etc/portage/package.use/qttools && \
     echo 'x11-libs/libxkbcommon X' >> /etc/portage/package.use/libxkbcommon && \
     echo 'x11-libs/cairo X' >> /etc/portage/package.use/cairo && \
@@ -41,6 +41,14 @@ RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/pack
     echo 'kde-frameworks/kwindowsystem wayland X' >> /etc/portage/package.use/kwindowsystem && \
     echo 'sys-apps/systemd policykit' >> /etc/portage/package.use/systemd && \
     echo 'kde-frameworks/kconfig dbus qml' >> /etc/portage/package.use/kconfig && \
+    echo 'kde-frameworks/kcoreaddons dbus' >> /etc/portage/package.use/kcoreaddons && \
+    echo 'kde-frameworks/kidletime wayland' >> /etc/portage/package.use/kidletime && \
+    echo 'kde-frameworks/kguiaddons wayland' >> /etc/portage/package.use/kguiaddons && \
+    echo 'kde-frameworks/sonnet qml' >> /etc/portage/package.use/sonnet && \
+    echo 'kde-frameworks/kimageformats avif' >> /etc/portage/package.use/kimageformats && \
+    echo 'kde-frameworks/prison qml' >> /etc/portage/package.use/prison && \
+    echo 'dev-libs/qcoro dbus' >> /etc/portage/package.use/qcoro && \
+    echo 'x11-base/xwayland libei' >> /etc/portage/package.use/xwayland && \
     echo 'dev-qt/qt5compat qml icu' >> /etc/portage/package.use/qt5compat && \
     echo 'dev-qt/qtdeclarative vulkan opengl' >> /etc/portage/package.use/qtdeclarative && \
     # Accept fcitx ecosystem for arm64 (keyword missing on this arch)
