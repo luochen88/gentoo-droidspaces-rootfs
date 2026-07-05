@@ -3,6 +3,9 @@
 ARG TARGETPLATFORM
 FROM gentoo/stage3:systemd AS customizer
 
+# Cache bust — change this value (or pass via --build-arg) to force rebuild
+ARG CACHEBUST=0
+
 # Build options
 ARG PulseAudio=socket
 ARG ENABLE_zh=true
@@ -10,7 +13,8 @@ ARG ENABLE_dev=true
 ARG USERNAME=luochen570
 
 # Update Portage, configure for source build
-RUN emerge --sync && \
+RUN echo "cachebust=${CACHEBUST}" ; \
+    emerge --sync && \
     emerge --oneshot sys-apps/portage && \
     echo 'FEATURES="-ipc-sandbox -network-sandbox -pid-sandbox noman noinfo nodoc"' >> /etc/portage/make.conf && \
     echo 'EMERGE_DEFAULT_OPTS="--jobs=$(nproc) --load-average=$(nproc) --quiet-build=y"' >> /etc/portage/make.conf
