@@ -18,7 +18,9 @@ RUN echo "cachebust=${CACHEBUST}" ; \
     emerge --oneshot sys-apps/portage && \
     echo 'FEATURES="-ipc-sandbox -network-sandbox -pid-sandbox noman noinfo nodoc"' >> /etc/portage/make.conf && \
     echo 'EMERGE_DEFAULT_OPTS="--jobs='"$(nproc)"' --load-average='"$(nproc)"' --quiet-build=y"' >> /etc/portage/make.conf && \
-    echo 'USE="X"' >> /etc/portage/make.conf
+    echo 'USE="X"' >> /etc/portage/make.conf && \
+    # Pin glib to stage3 version (avoid gobject-introspection incompatibility)
+    echo '>=dev-libs/glib-2.83' >> /etc/portage/package.mask/glib
 
 # Accept KDE licenses and set USE flags
 RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/package.license && \
