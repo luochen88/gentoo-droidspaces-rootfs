@@ -17,7 +17,7 @@ RUN echo "cachebust=${CACHEBUST}" ; \
     emerge --sync && \
     emerge --oneshot sys-apps/portage && \
     echo 'FEATURES="-ipc-sandbox -network-sandbox -pid-sandbox getbinpkg"' >> /etc/portage/make.conf && \
-    echo 'EMERGE_DEFAULT_OPTS="--jobs=4 --load-average=6 --quiet-build=y --getbinpkg --usepkg"' >> /etc/portage/make.conf && \
+    echo 'EMERGE_DEFAULT_OPTS="--jobs=4 --load-average=6 --quiet-build=y --getbinpkg --usepkg --binpkg-respect-use=n --binpkg-changed-deps=n"' >> /etc/portage/make.conf && \
     echo 'PORTAGE_BINHOST="https://gentoo.osuosl.org/releases/arm64/binpackages/23.0/arm64/"' >> /etc/portage/make.conf && \
     # glib needs rst2man (dev-python/docutils) during configure, even with 'noman'
     emerge --oneshot --getbinpkg --usepkg dev-python/docutils && \
