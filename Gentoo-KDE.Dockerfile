@@ -118,7 +118,7 @@ RUN --mount=type=cache,target=/var/cache/distfiles,sharing=locked \
         dev-lang/python \
         dev-python/pip \
         dev-debug/strace \
-        && rm -rf /var/cache/distfiles/* /var/tmp/portage/*
+        && rm -rf /var/cache/distfiles/* /var/cache/binpkgs/* /var/tmp/portage/*
 
 # Copy our bashrc script to the rootfs
 COPY scripts/bashrc.sh /etc/profile.d/ds-aliases.sh
@@ -289,6 +289,7 @@ RUN chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}
 # Final cleanup — strip all build-time cruft
 RUN rm -rf \
     /var/cache/distfiles/* \
+    /var/cache/binpkgs/* \
     /var/tmp/portage/* \
     /var/cache/edb/* \
     /var/db/repos/gentoo \
@@ -296,7 +297,15 @@ RUN rm -rf \
     /var/log/*.log \
     /var/log/portage \
     /usr/share/gtk-doc \
-    /usr/share/doc/*
+    /usr/share/doc/* \
+    /usr/share/man/* \
+    /usr/share/info/* \
+    && find /usr/share/locale -mindepth 1 -maxdepth 1 ! -name 'en*' ! -name 'zh*' -exec rm -rf {} + \
+    && find /usr/lib* -name '*.la' -delete \
+    && find /usr/lib* -name '*.a' ! -name 'crt*.a' ! -name 'libpthread*.a' -delete \
+    && find /usr -name '__pycache__' -type d -exec rm -rf {} + 2>/dev/null || true \
+    && find /usr -name '*.pyc' -delete 2>/dev/null || true \
+    && find /usr -name '*.pyo' -delete 2>/dev/null || true
 
 # Stage 2: Export to scratch for extraction
 FROM scratch AS export
