@@ -18,6 +18,8 @@ RUN echo "cachebust=${CACHEBUST}" ; \
     emerge --oneshot sys-apps/portage && \
     echo 'FEATURES="-ipc-sandbox -network-sandbox -pid-sandbox noman noinfo nodoc"' >> /etc/portage/make.conf && \
     echo 'EMERGE_DEFAULT_OPTS="--jobs='"$(nproc)"' --load-average='"$(nproc)"' --quiet-build=y"' >> /etc/portage/make.conf && \
+    # glib needs rst2man (dev-python/docutils) during configure, even with 'noman'
+    emerge --oneshot dev-python/docutils && \
     # Stage3 Docker image lacks dev files — install glib first (needed by gobject-introspection build)
     emerge --oneshot --nodeps dev-libs/glib && \
     emerge --oneshot dev-libs/gobject-introspection
