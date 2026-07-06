@@ -12,17 +12,18 @@ ARG ENABLE_zh=true
 ARG ENABLE_dev=true
 ARG USERNAME=luochen570
 
-# Update Portage, configure for source build
+# Update Portage, configure with binhost for fast binary installs
 RUN echo "cachebust=${CACHEBUST}" ; \
     emerge --sync && \
     emerge --oneshot sys-apps/portage && \
-    echo 'FEATURES="-ipc-sandbox -network-sandbox -pid-sandbox noman noinfo nodoc"' >> /etc/portage/make.conf && \
-    echo 'EMERGE_DEFAULT_OPTS="--jobs='$(( $(nproc) * 2 ))' --load-average='$(( $(nproc) * 3 ))' --quiet-build=y"' >> /etc/portage/make.conf && \
+    echo 'FEATURES="-ipc-sandbox -network-sandbox -pid-sandbox getbinpkg"' >> /etc/portage/make.conf && \
+    echo 'EMERGE_DEFAULT_OPTS="--jobs=4 --load-average=6 --quiet-build=y --getbinpkg --usepkg"' >> /etc/portage/make.conf && \
+    echo 'PORTAGE_BINHOST="https://gentoo.osuosl.org/releases/arm64/binpackages/23.0/arm64/"' >> /etc/portage/make.conf && \
     # glib needs rst2man (dev-python/docutils) during configure, even with 'noman'
-    emerge --oneshot dev-python/docutils && \
+    emerge --oneshot --getbinpkg --usepkg dev-python/docutils && \
     # Stage3 Docker image lacks dev files — install glib first (needed by gobject-introspection build)
-    emerge --oneshot --nodeps dev-libs/glib && \
-    emerge --oneshot dev-libs/gobject-introspection
+    emerge --oneshot --nodeps --getbinpkg --usepkg dev-libs/glib && \
+    emerge --oneshot --getbinpkg --usepkg dev-libs/gobject-introspection
 
 # Accept KDE licenses and set USE flags
 RUN echo 'kde-plasma/* QPL-2.0 GPL-2 GPL-3 LGPL-2.1 LGPL-3' >> /etc/portage/package.license && \
