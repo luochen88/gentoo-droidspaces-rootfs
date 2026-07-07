@@ -61,6 +61,7 @@ echo "Running Docker Build (Native)..."
 docker buildx build \
   --target export \
   --output type=tar,dest="$TEMP_TAR" \
+  --build-arg CACHEBUST="$(date +%s)" \
   -f "$DOCKERFILE" \
   .
 
